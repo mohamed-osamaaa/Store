@@ -6,7 +6,10 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { CreateProductDto } from '../Dto/create-product.dto';
 import { UpdateProductDto } from '../Dto/update-product.dto';
@@ -29,21 +32,25 @@ export class ProductsController {
     return this.productsService.getProductById(id);
   }
 
-  // Create a new product
+  // Create a new product with image upload
   @Post()
+  @UseInterceptors(FileInterceptor('file'))
   async createProduct(
     @Body() createProductDto: CreateProductDto,
+    @UploadedFile() file?: Express.Multer.File,
   ): Promise<Product> {
-    return this.productsService.createProduct(createProductDto);
+    return this.productsService.createProduct(createProductDto, file);
   }
 
-  // Update a product by ID
+  // Update a product with optional image upload
   @Put(':id')
+  @UseInterceptors(FileInterceptor('file'))
   async updateProduct(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
+    @UploadedFile() file?: Express.Multer.File,
   ): Promise<Product> {
-    return this.productsService.updateProduct(id, updateProductDto);
+    return this.productsService.updateProduct(id, updateProductDto, file);
   }
 
   // Delete a product by ID

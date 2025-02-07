@@ -2,6 +2,7 @@ import { Model } from 'mongoose';
 
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
+import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 import { CreateProductDto } from '../Dto/create-product.dto';
 import { UpdateProductDto } from '../Dto/update-product.dto';
 import { Product } from '../interfaces/product.interface';
@@ -11,6 +12,7 @@ export class ProductsService {
   constructor(
     @Inject('PRODUCTS_MODEL')
     private readonly productsModel: Model<Product>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   // Get all products
@@ -27,22 +29,41 @@ export class ProductsService {
     return product;
   }
 
-  // Create a new product
-  async createProduct(createProductDto: CreateProductDto): Promise<Product> {
-    const newProduct = new this.productsModel(createProductDto);
+  // Create a new product with image upload
+  async createProduct(
+    createProductDto: CreateProductDto,
+    file?: Express.Multer.File,
+  ): Promise<Product> {
+    let imageUrl: string | null = null;
+    if (file) {
+      imageUrl = await this.cloudinaryService.uploadImage(file);
+    }
+
+    const newProduct = new this.productsModel({
+      ...createProductDto,
+      imageURL: imageUrl || '',
+    });
+
     return newProduct.save();
   }
 
-  // Update an existing product by ID
+  // Update product with optional image upload
   async updateProduct(
     id: string,
     updateProductDto: UpdateProductDto,
+    file?: Express.Multer.File,
   ): Promise<Product> {
-    const updatedProduct = await this.productsModel
-      .findByIdAndUpdate(id, updateProductDto, {
-        new: true, // Returns the updated document
-      })
-      .exec();
+    let imageUrl = updateProductDto.imageURL;
+
+    if (file) {
+      imageUrl = await this.cloudinaryService.uploadImage(file);
+    }
+
+    const updatedProduct = await this.productsModel.findByIdAndUpdate(
+      id,
+      { ...updateProductDto, imageURL: imageUrl },
+      { new: true },
+    );
 
     if (!updatedProduct) {
       throw new NotFoundException(`Product with ID ${id} not found.`);
