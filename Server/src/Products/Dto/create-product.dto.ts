@@ -1,4 +1,6 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+
+import { Transform } from '@nestjs/class-transformer';
 
 export class CreateProductDto {
   @IsNotEmpty({ message: 'Product name cannot be empty.' })
@@ -6,10 +8,11 @@ export class CreateProductDto {
   productName: string;
 
   @IsNotEmpty({ message: 'Price cannot be empty.' })
+  @Transform(({ value }) => parseFloat(value))
   @IsNumber({}, { message: 'Price must be a number.' })
   price: number;
 
-  @IsNotEmpty({ message: 'Image URL cannot be empty.' })
+  @IsOptional()
   @IsString({ message: 'Image URL must be a string.' })
   imageURL: string;
 }

@@ -34,7 +34,7 @@ export class ProductsController {
 
   // Create a new product with image upload
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('imageURL'))
   async createProduct(
     @Body() createProductDto: CreateProductDto,
     @UploadedFile() file?: Express.Multer.File,
@@ -44,7 +44,7 @@ export class ProductsController {
 
   // Update a product with optional image upload
   @Put(':id')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('imageURL'))
   async updateProduct(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
