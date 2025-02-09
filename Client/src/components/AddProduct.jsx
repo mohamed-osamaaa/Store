@@ -32,61 +32,68 @@ function AddProduct() {
     };
 
     return (
-        <div className='bg-gray-900 w-full px-10 md:px-20 lg:px-52 py-10 min-h-screen flex flex-col items-center'>
-            <h1 className='text-white text-2xl font-semibold mb-6'>Add New Product</h1>
-            <form onSubmit={handleSubmit} className='bg-gray-800 p-6 rounded-lg w-full max-w-lg shadow-md'>
-                <div className='mb-4'>
-                    <label className='block text-gray-300 mb-2'>Product Name:</label>
-                    <div className='relative flex items-center'>
-                        <Package2Icon className="absolute left-3 text-gray-400 size-5" />
-                        <input
-                            type='text'
-                            name='name'
-                            placeholder='Enter Product Name'
-                            value={productData.name}
-                            onChange={handleChange}
-                            className='w-full pl-10 p-2 rounded bg-gray-700 text-white outline-none'
-                        />
-                    </div>
-                </div>
+        <div className='bg-gray-900 w-full h-auto flex justify-center items-center p-8'>
+            <div className='bg-gray-800 p-8 rounded-lg w-[500px] h-auto shadow-lg'>
+                <h1 className='text-white text-3xl font-semibold mb-6 text-center'>Add New Product</h1>
+                <form onSubmit={handleSubmit} className='flex flex-col gap-6'>
 
-                <div className='mb-4'>
-                    <label className='block text-gray-300 mb-2'>Product Price:</label>
-                    <div className='relative flex items-center'>
-                        <DollarSignIcon className="absolute left-3 text-gray-400 size-5" />
-                        <input
-                            type='number'
-                            name='price'
-                            placeholder='0.00'
-                            value={productData.price}
-                            onChange={handleChange}
-                            className='w-full pl-10 p-2 rounded bg-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500'
-                        />
+                    {/* Product Name */}
+                    <div>
+                        <label className='block text-gray-300 mb-2'>Product Name:</label>
+                        <div className='relative flex items-center'>
+                            <Package2Icon className="absolute left-3 text-gray-400 size-6" />
+                            <input
+                                type='text'
+                                name='name'
+                                placeholder='Enter Product Name'
+                                value={productData.name}
+                                onChange={handleChange}
+                                className='w-full pl-12 p-3 rounded bg-gray-700 text-white outline-none text-lg'
+                            />
+                        </div>
                     </div>
-                </div>
 
-                <div className='mb-4'>
-                    <label className='block text-gray-300 mb-2'>Image:</label>
-                    <div className='relative flex items-center'>
-                        <ImageIcon className="absolute left-3 text-gray-400 size-5" />
-                        <input
-                            type='file'
-                            name='imageURL'
-                            accept='image/*'
-                            onChange={handleImageChange}
-                            className='w-full pl-10 p-2 rounded bg-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500'
-                        />
+                    {/* Product Price */}
+                    <div>
+                        <label className='block text-gray-300 mb-2'>Product Price:</label>
+                        <div className='relative flex items-center'>
+                            <DollarSignIcon className="absolute left-3 text-gray-400 size-6" />
+                            <input
+                                type='number'
+                                name='price'
+                                placeholder='0.00'
+                                value={productData.price}
+                                onChange={handleChange}
+                                className='w-full pl-12 p-3 rounded bg-gray-700 text-white outline-none text-lg'
+                            />
+                        </div>
                     </div>
-                </div>
 
-                <button
-                    type='submit'
-                    className='w-full p-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition disabled:bg-gray-500'
-                    disabled={loading}
-                >
-                    {loading ? 'Adding...' : 'Add Product'}
-                </button>
-            </form>
+                    {/* Image Upload */}
+                    <div>
+                        <label className='block text-gray-300 mb-2'>Image:</label>
+                        <div className='relative flex items-center'>
+                            <ImageIcon className="absolute left-3 text-gray-400 size-6" />
+                            <input
+                                type='file'
+                                name='imageURL'
+                                accept='image/*'
+                                onChange={handleImageChange}
+                                className='w-full pl-12 p-3 rounded bg-gray-700 text-white outline-none text-lg'
+                            />
+                        </div>
+                    </div>
+
+                    {/* Submit Button */}
+                    <button
+                        type='submit'
+                        className='w-full p-3 bg-green-500 text-white text-lg rounded-lg transition hover:bg-green-600 disabled:bg-gray-500'
+                        disabled={loading}
+                    >
+                        {loading ? 'Adding...' : 'Add Product'}
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }

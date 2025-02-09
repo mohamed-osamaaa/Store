@@ -1,4 +1,5 @@
 import {
+    useCallback,
     useEffect,
     useState,
 } from 'react';
@@ -16,12 +17,16 @@ function HomePage() {
     const { products, getAllProducts, error, loading } = useProductStore();
     const [showAddProduct, setShowAddProduct] = useState(false);
 
-    useEffect(() => {
+    const fetchProducts = useCallback(() => {
         getAllProducts();
     }, [getAllProducts]);
 
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
     return (
-        <div className='bg-gray-800 w-full px-10 md:px-20 lg:px-52 min-h-screen mt-7'>
+        <div className="bg-gray-800 w-full px-10 md:px-20 lg:px-52 min-h-screen mt-7">
             {/* ADD PRODUCT BUTTON */}
             <div className="flex items-center justify-center pt-16 mb-7">
                 <button
@@ -33,15 +38,18 @@ function HomePage() {
                 </button>
             </div>
 
-            {/* ADD PRODUCT MODAL */}
             {showAddProduct && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-                        <button className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+                    <div className="relative bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-md">
+                        {/* Close Button */}
+                        <button
+                            className="absolute top-3 right-3 text-gray-300 hover:text-gray-500"
                             onClick={() => setShowAddProduct(false)}
                         >
                             ✖
                         </button>
+
+                        {/* Add Product Form */}
                         <AddProduct closeModal={() => setShowAddProduct(false)} />
                     </div>
                 </div>
@@ -77,7 +85,7 @@ function HomePage() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {products.map((product) => (
-                        <ProductCard key={product.id} product={product} />
+                        <ProductCard key={product._id} product={product} />
                     ))}
                 </div>
             )}
