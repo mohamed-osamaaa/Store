@@ -13,8 +13,8 @@ export const useProductStore = create((set, get) => ({
     getAllProducts: async () => {
         set({ loading: true });
         try {
-            const res = await axiosInstance.get("/products");
-            set({ products: res.data });
+            const { data } = await axiosInstance.get("/products");
+            set({ products: data });
         } catch (error) {
             toast.error(
                 error.response?.data?.message || "Failed to fetch products"
@@ -29,8 +29,8 @@ export const useProductStore = create((set, get) => ({
     getProduct: async (productId) => {
         set({ loading: true });
         try {
-            const res = await axiosInstance.get(`/products/${productId}`);
-            set({ product: res.data });
+            const { data } = await axiosInstance.get(`/products/${productId}`);
+            set({ product: data });
         } catch (error) {
             toast.error(
                 error.response?.data?.message || "Failed to fetch product"
@@ -42,23 +42,20 @@ export const useProductStore = create((set, get) => ({
     },
 
     // Create a new product
-    createProduct: async (e, productData, imageFile) => {
+    createProduct: async (e, productData) => {
         e.preventDefault();
         set({ loading: true });
         try {
             const formData = new FormData();
-            Object.keys(productData).forEach((key) => {
-                formData.append(key, productData[key]);
-            });
-            if (imageFile) {
-                formData.append("imageURL", imageFile);
-            }
+            Object.entries(productData).forEach(([key, value]) =>
+                formData.append(key, value)
+            );
 
-            const res = await axiosInstance.post("/products", formData, {
+            const { data } = await axiosInstance.post("/products", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
 
-            set((state) => ({ products: [...state.products, res.data] }));
+            set((state) => ({ products: [...state.products, data] }));
             toast.success("Product created successfully");
         } catch (error) {
             toast.error(
@@ -70,18 +67,15 @@ export const useProductStore = create((set, get) => ({
     },
 
     // Update a product
-    updateProduct: async (productId, productData, imageFile) => {
+    updateProduct: async (productId, productData) => {
         set({ loading: true });
         try {
             const formData = new FormData();
-            Object.keys(productData).forEach((key) => {
-                formData.append(key, productData[key]);
-            });
-            if (imageFile) {
-                formData.append("imageURL", imageFile);
-            }
+            Object.entries(productData).forEach(([key, value]) =>
+                formData.append(key, value)
+            );
 
-            const res = await axiosInstance.put(
+            const { data } = await axiosInstance.put(
                 `/products/${productId}`,
                 formData,
                 {
@@ -91,7 +85,7 @@ export const useProductStore = create((set, get) => ({
 
             set((state) => ({
                 products: state.products.map((product) =>
-                    product._id === productId ? res.data : product
+                    product._id === productId ? data : product
                 ),
             }));
             toast.success("Product updated successfully");

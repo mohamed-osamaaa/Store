@@ -17,6 +17,7 @@ function HomePage() {
     const { products, getAllProducts, error, loading } = useProductStore();
     const [showAddProduct, setShowAddProduct] = useState(false);
 
+
     const fetchProducts = useCallback(() => {
         getAllProducts();
     }, [getAllProducts]);

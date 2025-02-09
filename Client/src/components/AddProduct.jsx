@@ -11,7 +11,8 @@ import { useProductStore } from '../store/useProductStore';
 
 function AddProduct() {
     const { createProduct, loading } = useProductStore();
-    const [productData, setProductData] = useState({ name: '', price: '', image: null });
+    const [productData, setProductData] = useState({ productName: '', price: '', imageURL: null });
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -19,16 +20,16 @@ function AddProduct() {
     };
 
     const handleImageChange = (e) => {
-        setProductData({ ...productData, image: e.target.files[0] });
+        setProductData({ ...productData, imageURL: e.target.files[0] });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!productData.name || !productData.price || !productData.image) {
+        if (!productData.productName || !productData.price || !productData.imageURL) {
             toast.error('All fields are required!');
             return;
         }
-        await createProduct(e, productData, productData.image);
+        await createProduct(e, productData, productData.imageURL);
     };
 
     return (
@@ -44,9 +45,9 @@ function AddProduct() {
                             <Package2Icon className="absolute left-3 text-gray-400 size-6" />
                             <input
                                 type='text'
-                                name='name'
+                                name='productName'
                                 placeholder='Enter Product Name'
-                                value={productData.name}
+                                value={productData.productName}
                                 onChange={handleChange}
                                 className='w-full pl-12 p-3 rounded bg-gray-700 text-white outline-none text-lg'
                             />
