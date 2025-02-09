@@ -5,10 +5,13 @@ import { axiosInstance } from "../lib/axios";
 
 export const useProductStore = create((set, get) => ({
     products: [],
+    loading: false,
+    error: null,
     product: null,
 
     // Fetch all products
     getAllProducts: async () => {
+        set({ loading: true });
         try {
             const res = await axiosInstance.get("/products");
             set({ products: res.data });
@@ -16,11 +19,15 @@ export const useProductStore = create((set, get) => ({
             toast.error(
                 error.response?.data?.message || "Failed to fetch products"
             );
+            set({ error: "Something went wrong", products: [] });
+        } finally {
+            set({ loading: false });
         }
     },
 
     // Fetch a single product by ID
     getProduct: async (productId) => {
+        set({ loading: true });
         try {
             const res = await axiosInstance.get(`/products/${productId}`);
             set({ product: res.data });
@@ -28,11 +35,16 @@ export const useProductStore = create((set, get) => ({
             toast.error(
                 error.response?.data?.message || "Failed to fetch product"
             );
+            set({ error: "Something went wrong", product: null });
+        } finally {
+            set({ loading: false });
         }
     },
 
     // Create a new product
-    createProduct: async (productData, imageFile) => {
+    createProduct: async (e, productData, imageFile) => {
+        e.preventDefault();
+        set({ loading: true });
         try {
             const formData = new FormData();
             Object.keys(productData).forEach((key) => {
@@ -52,15 +64,18 @@ export const useProductStore = create((set, get) => ({
             toast.error(
                 error.response?.data?.message || "Failed to create product"
             );
+        } finally {
+            set({ loading: false });
         }
     },
 
     // Update a product
-    updateProduct: async (productId, updatedData, imageFile) => {
+    updateProduct: async (productId, productData, imageFile) => {
+        set({ loading: true });
         try {
             const formData = new FormData();
-            Object.keys(updatedData).forEach((key) => {
-                formData.append(key, updatedData[key]);
+            Object.keys(productData).forEach((key) => {
+                formData.append(key, productData[key]);
             });
             if (imageFile) {
                 formData.append("imageURL", imageFile);
@@ -84,11 +99,14 @@ export const useProductStore = create((set, get) => ({
             toast.error(
                 error.response?.data?.message || "Failed to update product"
             );
+        } finally {
+            set({ loading: false });
         }
     },
 
     // Delete a product
     deleteProduct: async (productId) => {
+        set({ loading: true });
         try {
             await axiosInstance.delete(`/products/${productId}`);
             set((state) => ({
@@ -101,6 +119,8 @@ export const useProductStore = create((set, get) => ({
             toast.error(
                 error.response?.data?.message || "Failed to delete product"
             );
+        } finally {
+            set({ loading: false });
         }
     },
 }));
