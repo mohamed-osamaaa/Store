@@ -1,4 +1,7 @@
-import { useEffect } from 'react';
+import {
+    useEffect,
+    useState,
+} from 'react';
 
 import {
     PackageIcon,
@@ -10,58 +13,75 @@ import ProductCard from '../components/ProductCard';
 import { useProductStore } from '../store/useProductStore';
 
 function HomePage() {
-    const { products, product, getAllProducts, error, loading } = useProductStore();
+    const { products, getAllProducts, error, loading } = useProductStore();
+    const [showAddProduct, setShowAddProduct] = useState(false);
+
     useEffect(() => {
         getAllProducts();
     }, [getAllProducts]);
 
     return (
-        <div className='bg-gray-800 w-full px-52 min-h-screen mt-7'>
+        <div className='bg-gray-800 w-full px-10 md:px-20 lg:px-52 min-h-screen mt-7'>
+            {/* ADD PRODUCT BUTTON */}
             <div className="flex items-center justify-center pt-16 mb-7">
-                <button onClick={<AddProduct />} className="cursor-pointer flex items-center gap-2 rounded-lg bg-green-500 px-6 py-3 text-gray-800 font-medium shadow-md transition-all duration-300">
+                <button
+                    onClick={() => setShowAddProduct(true)}
+                    className="flex items-center gap-2 rounded-lg bg-green-500 px-6 py-3 text-gray-800 font-medium shadow-md transition-all duration-300 hover:bg-green-600"
+                >
                     <Plus className="w-5 h-5" />
                     Add Product
                 </button>
-            </div >
+            </div>
+
+            {/* ADD PRODUCT MODAL */}
+            {showAddProduct && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                        <button className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+                            onClick={() => setShowAddProduct(false)}
+                        >
+                            ✖
+                        </button>
+                        <AddProduct closeModal={() => setShowAddProduct(false)} />
+                    </div>
+                </div>
+            )}
+
+            {/* ERROR MESSAGE */}
             {error && (
                 <div className="mb-8 flex items-center justify-center rounded-lg bg-red-500 px-4 py-2 text-white text-center">
                     {error}
                 </div>
-            )
-            }
-            {/* <div className='grid grid-flow-row auto-rows-max'>
+            )}
 
-            </div> */}
-            {
-                products.length === 0 && !loading && (
-                    <div className="flex flex-col justify-center items-center h-96 space-y-4">
-                        <div className="bg-base-100 rounded-full p-6">
-                            <PackageIcon className="size-12" />
-                        </div>
-                        <div className="text-center space-y-2">
-                            <h3 className="text-2xl font-semibold ">No products found</h3>
-                            <p className="text-gray-500 max-w-sm">
-                                Get started by adding your first product to the inventory
-                            </p>
-                        </div>
+            {/* NO PRODUCTS MESSAGE */}
+            {products.length === 0 && !loading && (
+                <div className="flex flex-col justify-center items-center h-96 space-y-4">
+                    <div className="bg-gray-100 rounded-full p-6">
+                        <PackageIcon className="size-12 text-gray-600" />
                     </div>
-                )
-            }
+                    <div className="text-center space-y-2">
+                        <h3 className="text-2xl font-semibold text-white">No products found</h3>
+                        <p className="text-gray-400 max-w-sm">
+                            Get started by adding your first product to the inventory.
+                        </p>
+                    </div>
+                </div>
+            )}
 
-            {
-                loading ? (
-                    <div className="flex justify-center items-center h-64">
-                        <div className="loading loading-spinner loading-lg" />
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {products.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
-                )
-            }
-        </div >
+            {/* LOADING STATE */}
+            {loading ? (
+                <div className="flex justify-center items-center h-64">
+                    <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white" />
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {products.map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                    ))}
+                </div>
+            )}
+        </div>
     );
 }
 
