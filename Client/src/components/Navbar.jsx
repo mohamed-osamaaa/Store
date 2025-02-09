@@ -19,7 +19,7 @@ function Navbar() {
 
     return (
         <header
-            className="bg-slate-700 text-white py-4 shadow-md fixed top-0 left-0 w-full z-50 transition-opacity duration-300"
+            className="bg-slate-700 text-white py-4 shadow-md fixed top-0 left-0 w-full z-40 transition-opacity duration-300"
             style={{ opacity }}
         >
             <div className="container mx-auto flex items-center justify-between px-28">
