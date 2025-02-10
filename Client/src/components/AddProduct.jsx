@@ -6,6 +6,7 @@ import {
     Package2Icon,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 import { useProductStore } from '../store/useProductStore';
 
@@ -30,6 +31,8 @@ function AddProduct() {
             return;
         }
         await createProduct(e, productData, productData.imageURL);
+        Swal.fire("Success", "Product added successfully", "success");
+        // window.location.reload();
     };
 
     return (

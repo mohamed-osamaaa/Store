@@ -56,9 +56,16 @@ function ProductPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await updateProduct(product._id, productData);
+        const updatedProduct = await updateProduct(product._id, productData);
+        setProductData({
+            productName: updatedProduct.productName,
+            price: updatedProduct.price,
+            imageURL: updatedProduct.imageURL,
+        });
         Swal.fire("Success", "Product updated successfully", "success");
+        // window.location.reload();
     };
+    // const handleBackButton = () => window.location.reload();
 
     const handleDelete = async () => {
         const result = await Swal.fire({
@@ -105,7 +112,8 @@ function ProductPage() {
             <div className="max-w-4xl mx-auto py-8 px-4">
                 <Link
                     to="/"
-                    className="flex items-center space-x-2 bg-slate-700 p-2 rounded-sm"
+                    className="flex justify-center items-center space-x-2 bg-slate-700 p-2 rounded-sm"
+                // onClick={() => handleBackButton}
                 >
                     <ArrowLeftIcon className="size-5" />
                     <span>Back to products</span>

@@ -87,8 +87,11 @@ export const useProductStore = create((set, get) => ({
                 products: state.products.map((product) =>
                     product._id === productId ? data : product
                 ),
+                product: data,
             }));
+
             toast.success("Product updated successfully");
+            return data;
         } catch (error) {
             toast.error(
                 error.response?.data?.message || "Failed to update product"
