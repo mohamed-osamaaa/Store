@@ -16,16 +16,28 @@ import { useProductStore } from '../store/useProductStore';
 function ProductPage() {
     const navigate = useNavigate();
     const { id } = useParams();
-    const { product, getProduct, updateProduct, deleteProduct, loading, error } = useProductStore();
-    const [productData, setProductData] = useState({ productName: "", price: "", imageURL: "" });
+    const {
+        product,
+        getProduct,
+        updateProduct,
+        deleteProduct,
+        loading,
+        error,
+    } = useProductStore();
+    const [productData, setProductData] = useState({
+        productName: "",
+        price: "",
+        imageURL: "",
+    });
     const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         getProduct(id);
-    }, [id]);
+    }, [id, getProduct]);
 
     useEffect(() => {
         if (product) {
+            console.log("Product fetched:", product);
             setProductData({
                 productName: product.productName || "",
                 price: product.price || "",
@@ -36,11 +48,10 @@ function ProductPage() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setProductData((prev) => ({ ...prev, [name]: value }));
+        setProductData((productData) => ({ ...productData, [name]: value }));
     };
-
     const handleImageChange = (e) => {
-        setProductData((prev) => ({ ...prev, imageURL: e.target.files[0] }));
+        setProductData({ ...productData, imageURL: e.target.files[0] });
     };
 
     const handleSubmit = async (e) => {
@@ -52,7 +63,7 @@ function ProductPage() {
     const handleDelete = async () => {
         const result = await Swal.fire({
             title: "Are you sure?",
-            text: `You won't be able to revert this!\nDelete "${product.productName}"?`,
+            text: `You won't be able to revert this!\nDelete \"${product.productName}\"?`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -90,30 +101,72 @@ function ProductPage() {
     }
 
     return (
-        <div className="bg-gray-800">
-            <div className="flex justify-center items-center min-h-screen w-auto">
-                <div className="flex justify-start">
-                    <Link to="/" className="flex justify-start items-center space-x-2 bg-slate-700 text-center h-auto w-auto p-2 rounded-sm">
-                        <ArrowLeftIcon className="size-5" />
-                        Back to products
-                    </Link>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                    <div className="w-full h-fit">
-                        <img src={product.imageURL} className="inset-0 w-full h-full object-cover" />
+        <div className="bg-gray-800 min-h-screen text-white mt-14">
+            <div className="max-w-4xl mx-auto py-8 px-4">
+                <Link
+                    to="/"
+                    className="flex items-center space-x-2 bg-slate-700 p-2 rounded-sm"
+                >
+                    <ArrowLeftIcon className="size-5" />
+                    <span>Back to products</span>
+                </Link>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <div>
+                        <img
+                            src={product?.imageURL}
+                            className="w-full h-auto object-cover rounded-lg"
+                            alt="Product"
+                        />
                     </div>
-                    <div className="bg-gray-900 w-full h-auto flex justify-center items-center p-8">
-                        <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg w-[500px] h-auto shadow-lg">
-                            <h1 className="text-white text-3xl font-semibold mb-6 text-center">Edit Product</h1>
-
-                            <label className="block text-gray-300 mb-2">Product Name:</label>
-                            <input type="text" name="productName" value={productData.productName} onChange={handleChange} className="w-full p-3 rounded bg-gray-700 text-white outline-none text-lg" />
-
-                            <label className="block text-gray-300 mb-2">Product Price:</label>
-                            <input type="number" name="price" value={productData.price} onChange={handleChange} className="w-full p-3 rounded bg-gray-700 text-white outline-none text-lg" />
-
-                            <button type="submit" className="w-full p-3 bg-green-500 text-white text-lg rounded-lg transition hover:bg-green-600 disabled:bg-gray-500">Save Changes</button>
-                            <button className="p-2 text-red-500 hover:text-red-700" onClick={handleDelete}>Delete Product</button>
+                    <div className="bg-gray-900 p-6 rounded-lg shadow-lg">
+                        <form onSubmit={handleSubmit}>
+                            <h1 className="text-2xl font-semibold mb-4 text-center">
+                                Edit Product
+                            </h1>
+                            <label className="block text-gray-300 mb-2">
+                                Product Name:
+                            </label>
+                            <input
+                                type="text"
+                                name="productName"
+                                value={productData.productName}
+                                onChange={handleChange}
+                                className="w-full p-3 rounded bg-gray-700 text-white outline-none text-lg mb-4"
+                            />
+                            <label className="block text-gray-300 mb-2">
+                                Product Price:
+                            </label>
+                            <input
+                                type="number"
+                                name="price"
+                                value={productData.price}
+                                onChange={handleChange}
+                                className="w-full p-3 rounded bg-gray-700 text-white outline-none text-lg mb-4"
+                            />
+                            <label className="block text-gray-300 mb-2">
+                                Image:
+                            </label>
+                            <input
+                                type="file"
+                                name="imageURL"
+                                accept='image/*'
+                                onChange={handleImageChange}
+                                className="w-full p-3 rounded bg-gray-700 text-white outline-none text-lg mb-4"
+                            />
+                            <button
+                                type="submit"
+                                className="w-full p-3 bg-green-500 text-white text-lg rounded-lg transition hover:bg-green-600 disabled:bg-gray-500 mb-4"
+                            >
+                                Save Changes
+                            </button>
+                            <button
+                                type="button"
+                                className="w-full p-3 bg-red-500 text-white text-lg rounded-lg transition hover:bg-red-600"
+                                onClick={handleDelete}
+                                disabled={isDeleting}
+                            >
+                                {isDeleting ? "Deleting..." : "Delete Product"}
+                            </button>
                         </form>
                     </div>
                 </div>
