@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import {
     EditIcon,
     Trash2Icon,
@@ -11,7 +9,7 @@ import { useProductStore } from '../store/useProductStore';
 
 function ProductCard({ product }) {
     const { deleteProduct, loading } = useProductStore();
-    const [isDeleting, setIsDeleting] = useState(false);
+
 
     const handleDelete = async () => {
         const result = await Swal.fire({
